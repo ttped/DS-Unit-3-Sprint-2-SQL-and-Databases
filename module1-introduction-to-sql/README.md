@@ -52,13 +52,62 @@ Use `sqlite3` to load and write queries to explore the data, and answer the
 following questions:
 
 - How many total Characters are there?
+	SELECT count(name) 
+	FROM charactercreator_character
+	302 characters
 - How many of each specific subclass?
+	SELECT  (SELECT COUNT(*) FROM charactercreator_cleric) as cleric_count,
+	   	(SELECT COUNT(*) FROM charactercreator_fighter) as fighter_count,
+	   	(SELECT COUNT(*) FROM charactercreator_mage) as mage_count,
+	   	(SELECT COUNT(*) FROM charactercreator_necromancer) as necro_count,
+	   	(SELECT COUNT(*) FROM charactercreator_thief) as thief_count
+		cleric 75, fighter 68,	mage 108, necro 11, thief 51
+
 - How many total Items?
+	SELECT count(*)
+	FROM armory_item
+	174 items
 - How many of the Items are weapons? How many are not?
+	SELECT sum(case when item_ptr_id is null then 1 else 0 end) count_non_weapons, count(item_ptr_id) count_weapons 
+	FROM armory_item
+	LEFT JOIN armory_weapon
+	ON armory_item.item_id = armory_weapon.item_ptr_id
+	37 weapons, 137 non-weapons
 - How many Items does each character have? (Return first 20 rows)
+
+SELECT character_id, count(id)
+FROM charactercreator_character_inventory
+GROUP BY character_id
+LIMIT 20
+
 - How many Weapons does each character have? (Return first 20 rows)
+
+SELECT character_id, count(id)
+FROM charactercreator_character_inventory
+INNER JOIN armory_weapon
+ON item_id = item_ptr_id
+GROUP BY character_id
+LIMIT 20
+
 - On average, how many Items does each Character have?
+
+SELECT AVG (count_table)
+FROM(
+SELECT COUNT(id) as count_table
+FROM charactercreator_character_inventory
+GROUP BY character_id
+)
+
 - On average, how many Weapons does each character have?
+
+SELECT AVG (count_table)
+FROM(
+SELECT character_id, count(id) as count_table
+FROM charactercreator_character_inventory
+INNER JOIN armory_weapon
+ON item_id = item_ptr_id
+GROUP BY character_id
+)
 
 You do not need all the tables - in particular, the `account_*`, `auth_*`,
 `django_*`, and `socialaccount_*` tables are for the application and do not have
