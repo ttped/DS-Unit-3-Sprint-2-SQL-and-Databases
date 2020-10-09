@@ -23,12 +23,10 @@ df = pd.read_csv('titanic.csv')
 
 df['Survived'] = df['Survived'].map(lambda x: True if x == 1 else False)
 
-#df.to_sql('titanic_passengers', connection, schema='postgresql')
-
 df_tuple = [tuple(x) for x in df.values]
 
-#insert_query = "INSERT INTO titanic_passengers (survived, pclass, name, sex, age, sibling_spouse_aboard, parent_children_aboard, fare) VALUES %s"
-#execute_values(cursor, insert_query, df_tuple)
+insert_query = "INSERT INTO titanic_passengers (survived, pclass, name, sex, age, sibling_spouse_aboard, parent_children_aboard, fare) VALUES %s"
+execute_values(cursor, insert_query, df_tuple)
 
 query = """
     SELECT count(survived)

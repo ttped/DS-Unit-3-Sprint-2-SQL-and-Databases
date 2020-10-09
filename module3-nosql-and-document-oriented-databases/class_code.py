@@ -80,14 +80,19 @@ if __name__ == "__main__":
         print(q2)
         table_columns = execute_query(curs, q2)
         collection = db[str(table[0])]
+        dic_arr = []
         for val in result:
             dictionary_values = {}
             for i, col in enumerate(table_columns):
                 k = val[i]
                 dictionary_values[col[0]] = k
                 pass
-            print(dictionary_values)
-            collection.insert_one(dictionary_values)
+            #print(dictionary_values)
+            dic_arr.append(dictionary_values)
+            #collection.insert_one(dictionary_values)
+        #print(dic_arr)
+        if dic_arr:
+            collection.insert_many(dic_arr)
             
         #collection = db[str(table)]
         #collection.insert_all({result})
